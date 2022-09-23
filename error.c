@@ -38,6 +38,7 @@ char* error_add_arrows(char* txt, position_T* position_start, position_T* positi
 		int col_start = (i == 0) ? position_start->col : 0;
 		int col_end = (i == line_count-1) ? position_end->col : (strlen(line)-1);
 		string_push_string(result, line->string);
+		string_push(result, '\n');
 		for (int j = 0; j < col_start; j++) {
 			string_push(result, ' ');
 		}
@@ -45,7 +46,7 @@ char* error_add_arrows(char* txt, position_T* position_start, position_T* positi
 			string_push(result, '^');
 		}
 		idx_start = idx_end;
-		idx_end = string_find(txt, (char*)"\n", idx_start + 1, text->str_size);
+		idx_end = string_find(text, (char*)"\n", idx_start + 1, text->str_size);
 		if (idx_end < 0) { idx_end = strlen(text->string); }
 	}
 	return string_replace(result->string, (char*)"\t", (char*)"");

@@ -1,6 +1,7 @@
 #include "string.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 string_T* string_create(int size) { // INVALID SIZE?
 	string_T* string = malloc(sizeof(struct STRING_STRUCT));
@@ -11,11 +12,8 @@ string_T* string_create(int size) { // INVALID SIZE?
 }
 
 string_T* string_create_string(char* string) {
-	int len = strlen(string);
-	string_T* string_type = string_create(len);
-	for (int i = 0; i < len; i++) {
-		string_push(string_type, *(string + i));
-	}
+	string_T* string_type = string_create(1);
+	string_push_string(string_type, string);
 	return string_type;
 }
 
@@ -32,6 +30,13 @@ void string_push(string_T* string, char item) {
 }
 
 void string_push_string(string_T* string, char* item) {
+	int diff = strlen(string->string) - strlen(item);
+	if (diff < 0) {
+		diff = abs(diff);
+		string->size += diff;
+		string->str_size += diff;
+		string->string = realloc(string->string, string->size);
+	}
 	for (int i = 0; i < strlen(item); i++) {
 		string_push(string, *(item + i));
 	}
@@ -74,27 +79,13 @@ int string_find(string_T* string, char* substr, int start, int end) {
 }
 
 string_T* string_getsubstr(string_T* string, int start, int end) {
-	int length = strlen(string->string);
-	char* p;
-	int c;
-
-	p = malloc(length + 1);
-
-	if (p == NULL)
-	{
-		printf("Unable to allocate memory.\n");
-		exit(1);
+	string_T* string_type = string_create(4);
+	char* txt = string->string;
+	for (int i = start; i <= end; i++) {
+		char _char = string->string[i];
+		string_push(string_type, _char);
 	}
-
-	for (c = 0; c < length; c++)
-	{
-		*(p + c) = *(string->string + start - 1);
-		string->string++;
-	}
-
-	*(p + c) = '\0';
-
-	return p;
+	return string_type;
 }
 
 char* string_replace(char* str, char* orig, char* rep)

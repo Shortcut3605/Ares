@@ -1,0 +1,53 @@
+#include "node.h"
+#include <stdlib.h>
+#include <stdio.h>
+
+node_T node_create(int type) {
+	node_T node;
+	node.type = type;
+	return node;
+}
+
+void node_print(node_T* node) {
+	switch (node->type) {
+	case NT_NUMBER:
+		token_print(((numbernode_T*)node)->tok);
+		break;
+	case NT_BINOP:
+		printf("(\n");
+		node_print(((binopnode_T*)node)->left);
+		token_print(((binopnode_T*)node)->op_tok);
+		node_print(((binopnode_T*)node)->right);
+		printf(")\n");
+		break;
+	case NT_UNARY:
+		printf("(\n");
+		token_print(((unaryopnode_T*)node)->op_tok);
+		node_print(((unaryopnode_T*)node)->right);
+		printf(")\n");
+		break;
+	}
+}
+
+node_T* numbernode_create(token_T* tok) {
+	numbernode_T* numbernode = malloc(sizeof(struct NUMBERNODE_STRUCT));
+	numbernode->tok = tok;
+	numbernode->node = node_create(NT_NUMBER);
+	return &numbernode->node;
+}
+
+node_T* binopnode_create(node_T* left, token_T* op_tok, node_T* right) {
+	binopnode_T* binopnode = malloc(sizeof(struct BINOPNODE_STRUCT));
+	binopnode->left = left;
+	binopnode->op_tok = op_tok;
+	binopnode->right = right;
+	binopnode->node.type = NT_BINOP;
+	return &(binopnode->node);
+}
+
+node_T* unaryopnode_create(token_T* op_tok, node_T* right) {
+	unaryopnode_T* unaryopnode = malloc(sizeof(struct UNARYOPNODE_STRUCT));
+	unaryopnode->node = node_create(NT_UNARY);
+	unaryopnode->op_tok = op_tok;
+	unaryopnode->right = right;
+}

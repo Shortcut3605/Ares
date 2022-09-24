@@ -9,7 +9,7 @@
 #include <stdlib.h>
 int main() { // the main file
 	
-	lexer_T* lexer = lexer_create("5*8+3*5", "<stdin>");
+	lexer_T* lexer = lexer_create("18 / 6.0", "<stdin>");
 	list_T* list = lexer_make_tokens(lexer);
 	if (lexer->error != NULL) {
 		char* res = error_as_string(lexer->error);
@@ -23,7 +23,11 @@ int main() { // the main file
 	node_T* node = parser_expr(parser);
 
 	number_T number = visit(node);
-	printf("%d\n", number.i);
+	switch (number.type) {
+	case 1: printf("%d\n", number.i); break;
+	case 2: printf("%f\n", number.f); break;
+	}
+	
 
 	list_destroy(list);
 }

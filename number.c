@@ -17,11 +17,28 @@ number_T added_to(number_T current,number_T other) {
 	if (other.type == current.type) {
 		return number_create(other.type, (current.i + other.i), (current.f + other.f));
 	}
+	else {
+		if (current.type == 2){
+			other.f = (float)other.i;
+			return number_create(2, -1, (current.f + other.f));
+		}
+		current.f = (float)current.i;
+		return number_create(2, -1, (current.f + other.f));
+	}
 }
 
 number_T subbed_by(number_T current, number_T other) {
 	if (other.type == current.type) {
 		return number_create(other.type, (current.i - other.i), (current.f - other.f));
+	}
+	else {
+		if (current.type == 2) {
+			other.f = (float)other.i;
+			return number_create(2, -1, (current.f - other.f));
+		}
+		
+		current.f = (float)current.i;
+		return number_create(2, -1, (current.f - other.f));
 	}
 }
 
@@ -29,11 +46,29 @@ number_T multed_by(number_T current, number_T other) {
 	if (other.type == current.type) {
 		return number_create(other.type, (current.i * other.i), (current.f * other.f));
 	}
+	else {
+		if (current.type == 2) {
+			other.f = (float)other.i;
+			return number_create(2, -1, (current.f * other.f));
+		}
+		
+		current.f = (float)current.i;
+		return number_create(2, -1, (current.f * other.f));
+	}
 }
 
 number_T divided_by(number_T current, number_T other) {
 	if (other.type == current.type) {
 		return number_create(other.type, (current.i / other.i), (current.f / other.f));
+	}
+	else {
+		if (current.type == 2) {
+			other.f = (float)other.i;
+			return number_create(2, -1, (current.f / other.f));
+		}
+		
+		current.f = (float)current.i;
+		return number_create(2, -1, (current.f / other.f));
 	}
 }
 

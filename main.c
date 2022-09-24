@@ -9,7 +9,7 @@
 #include <stdlib.h>
 int main() { // the main file
 	
-	lexer_T* lexer = lexer_create("18 / 6.0", "<stdin>");
+	lexer_T* lexer = lexer_create("18.0 * 3.0", "<stdin>");
 	list_T* list = lexer_make_tokens(lexer);
 	if (lexer->error != NULL) {
 		char* res = error_as_string(lexer->error);

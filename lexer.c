@@ -51,10 +51,12 @@ token_T* lexer_make_number(lexer_T* lexer) { // TODO MAKE STRINGS MORE EFFICIENT
 	}
 
 	if (dot) {
-		return token_create(TT_FLOAT, value->string, start_pos);
+		token_T* tok = token_create(TT_FLOAT, value->string, start_pos, lexer->pos);
+		tok->hasDecimal = 1;
+		return tok;
 	}
 	else {
-		return token_create(TT_INT, value->string, start_pos);
+		return token_create(TT_INT, value->string, start_pos, lexer->pos);
 	}
 }
 
@@ -73,12 +75,12 @@ list_T* lexer_make_tokens(lexer_T* lexer) {
 			}
 			else {
 				switch (lexer->current_char) {
-				case '+': list_push(list, (void*)token_create(TT_PLUS, NULL, lexer->pos)); break;
-				case '-': list_push(list, (void*)token_create(TT_MINUS, NULL, lexer->pos)); break;
-				case '*': list_push(list, (void*)token_create(TT_MUL, NULL, lexer->pos)); break;
-				case '/': list_push(list, (void*)token_create(TT_DIV, NULL, lexer->pos)); break;
-				case '(': list_push(list, (void*)token_create(TT_LPAREN, NULL, lexer->pos)); break;
-				case ')': list_push(list, (void*)token_create(TT_RPAREN, NULL, lexer->pos)); break;
+				case '+': list_push(list, (void*)token_create(TT_PLUS, NULL, lexer->pos, NULL)); break;
+				case '-': list_push(list, (void*)token_create(TT_MINUS, NULL, lexer->pos, NULL)); break;
+				case '*': list_push(list, (void*)token_create(TT_MUL, NULL, lexer->pos, NULL)); break;
+				case '/': list_push(list, (void*)token_create(TT_DIV, NULL, lexer->pos, NULL)); break;
+				case '(': list_push(list, (void*)token_create(TT_LPAREN, NULL, lexer->pos, NULL)); break;
+				case ')': list_push(list, (void*)token_create(TT_RPAREN, NULL, lexer->pos, NULL)); break;
 				default: {
 					position_T* position_start = position_copy(lexer->pos);
 					const char* template = "`%c`";
@@ -93,6 +95,6 @@ list_T* lexer_make_tokens(lexer_T* lexer) {
 			}
 		}
 	}
-	list_push(list, (void*)token_create(TT_EOF, NULL, lexer->pos));
+	list_push(list, (void*)token_create(TT_EOF, NULL, lexer->pos, NULL));
 	return list;
 }

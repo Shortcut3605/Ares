@@ -26,7 +26,7 @@ char* error_add_arrows(char* txt, position_T* position_start, position_T* positi
 	string_T* result = string_create(4);
 	string_T* text = string_create_string(txt);
 	int idx_start = MAX(string_rfind(text, (char*)"\n", 0, position_start->idx), 0);
-	int idx_end = string_rfind(text, (char*)"\n", idx_start + 1, text->str_size);
+	int idx_end = string_find(text, (char*)"\n", idx_start + 1, text->str_size);
 	if (idx_end < 0) {
 		idx_end = strlen(text->string);
 	}

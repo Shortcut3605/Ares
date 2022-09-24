@@ -35,9 +35,9 @@ number_T visit(node_T* node) {
 number_T visit_NumberNode(node_T* node) {
 	numbernode_T* nn = (numbernode_T*)node;
 	if (nn->tok->hasDecimal) {
-		return set_pos(number_create(2, -1, atof(nn->tok->value)), nn->tok->position, nn->tok->position_end);
+		return set_pos(number_create(2, -1, atof(nn->tok->value)), node->pos_start, node->pos_end);
 	}
-	return set_pos(number_create(1, atoi(nn->tok->value) ,-1.0), nn->tok->position, nn->tok->position_end);
+	return set_pos(number_create(1, atoi(nn->tok->value) ,-1.0), node->pos_start, node->pos_end);
 }
 
 number_T visit_BinOpNode(node_T* node) {
@@ -52,7 +52,7 @@ number_T visit_BinOpNode(node_T* node) {
 	case TT_DIV: result = divided_by(left, right); break;
 	default: printf("UNEXPECTED TOKEN\n"); break;
 	}
-	return set_pos(result, get_startpos(node), get_endpos(node));
+	return set_pos(result, node->pos_start, node->pos_end);
 }
 
 number_T visit_UnaryOpNode(node_T* node) {
@@ -65,5 +65,5 @@ number_T visit_UnaryOpNode(node_T* node) {
 		default: printf("WHAT IS IN FRONT OF THAT NUMBER ????? \n"); break;
 		}
 	}
-	return number;
+	return set_pos(number, node->pos_start, node->pos_end);
 }

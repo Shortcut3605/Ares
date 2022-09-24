@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-node_T node_create(int type) {
+node_T node_create(int type,position_T* pos_start, position_T* pos_end) {
 	node_T node;
 	node.type = type;
+	node.pos_start = pos_start;
+	node.pos_end = pos_end;
 	return node;
 }
 
@@ -32,7 +34,7 @@ void node_print(node_T* node) {
 node_T* numbernode_create(token_T* tok) {
 	numbernode_T* numbernode = malloc(sizeof(struct NUMBERNODE_STRUCT));
 	numbernode->tok = tok;
-	numbernode->node = node_create(NT_NUMBER);
+	numbernode->node = node_create(NT_NUMBER, tok->position, tok->position_end);
 	return &numbernode->node;
 }
 
@@ -42,12 +44,15 @@ node_T* binopnode_create(node_T* left, token_T* op_tok, node_T* right) {
 	binopnode->op_tok = op_tok;
 	binopnode->right = right;
 	binopnode->node.type = NT_BINOP;
+	binopnode->node.pos_start = left->pos_start;
+	binopnode->node.pos_end = right->pos_end;
 	return &(binopnode->node);
 }
 
 node_T* unaryopnode_create(token_T* op_tok, node_T* right) {
 	unaryopnode_T* unaryopnode = malloc(sizeof(struct UNARYOPNODE_STRUCT));
-	unaryopnode->node = node_create(NT_UNARY);
+	unaryopnode->node = node_create(NT_UNARY, op_tok->position, right->pos_end);
 	unaryopnode->op_tok = op_tok;
 	unaryopnode->right = right;
+	return &(unaryopnode->node);
 }

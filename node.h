@@ -7,9 +7,11 @@ typedef struct NODE_STRUCT {
 		NT_BINOP,
 		NT_UNARY,
 	} type;
+	position_T* pos_start;
+	position_T* pos_end;
 } node_T;
 
-node_T node_create(int type);
+node_T node_create(int type, position_T* pos_start, position_T* pos_end);
 
 void node_print(node_T* node);
 

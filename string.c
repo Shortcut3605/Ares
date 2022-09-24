@@ -60,7 +60,7 @@ int string_rfind(string_T* string, char* substr, int start, int end) {
 	if (found) {
 		return (found - originalPtr + 1);
 	}
-	return NULL;
+	return -1;
 }
 
 int string_find(string_T* string, char* substr, int start, int end) {
@@ -75,7 +75,7 @@ int string_find(string_T* string, char* substr, int start, int end) {
 	if (found) {
 		return (found - originalPtr + 1);
 	}
-	return NULL;
+	return -1;
 }
 
 string_T* string_getsubstr(string_T* string, int start, int end) {

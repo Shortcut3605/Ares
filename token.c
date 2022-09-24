@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-token_T* token_create(int type, char* value, position_T* position) {
+token_T* token_create(int type, char* value, position_T* position, position_T* position_end) {
 	token_T* token = malloc(sizeof(struct TOKEN_STRUCT));
 	if (type < TT_INT || type > TT_EOF) {
 		//ERROR
@@ -14,6 +14,11 @@ token_T* token_create(int type, char* value, position_T* position) {
 	token->type = type;
 	token->value = value;
 	token->position = position_copy(position);
+	if (position_end != NULL) {
+		token->position_end = position_copy(position_end);
+	}
+	else { token->position_end = NULL; }
+	token->hasDecimal = 0;
 	return token;
 }
 

@@ -15,11 +15,13 @@ typedef struct TOKEN_STRUCT {
 		TT_EOF,
 	} type; 
 	position_T* position;
+	position_T* position_end;
+	char hasDecimal;
 } token_T;
 
 char* token_type_to_str(int type);
 
-token_T* token_create(int type, char* value , position_T* position);
+token_T* token_create(int type, char* value , position_T* position, position_T* position_end);
 
 void token_print(token_T* token);
 

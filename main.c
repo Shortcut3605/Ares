@@ -5,14 +5,34 @@
 #include "parser.h"
 #include "interpreter.h"
 #include "error.h"
+#include "string.h"
 #include <stdio.h>
 #include <stdlib.h>
-int main() { // the main file
+
+string_T* read_file(const char* filename){
+	FILE* ptr;
+	char ch;
+	string_T* res = string_create(4);
+	ptr = fopen(filename, "r");
+	if(ptr == NULL){
+		return NULL;
+	}
+	while(!feof(ptr)){
+		ch = fgetc(ptr);
+		string_push(res, ch);
+	}
+	return res;
+}
+
+int main(int argc, char** argv) { // the main file
+
 	char buff[1024];
-	printf("Enter code: ");
+	printf("Enter filename: ");
 	scanf("%s",&buff);
 	puts("");
-	lexer_T* lexer = lexer_create(buff, "<stdin>");
+	string_T* src = read_file(buff);
+	if(src==NULL){return 1;}
+	lexer_T* lexer = lexer_create(src->string, "<stdin>");
 	list_T* list = lexer_make_tokens(lexer);
 	if (lexer->error != NULL) {
 		char* res = error_as_string(lexer->error);
@@ -33,4 +53,5 @@ int main() { // the main file
 	
 
 	list_destroy(list);
+	string_destroy(src);
 }

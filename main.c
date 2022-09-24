@@ -3,12 +3,13 @@
 #include "lexer.h"
 #include "node.h"
 #include "parser.h"
+#include "interpreter.h"
 #include "error.h"
 #include <stdio.h>
 #include <stdlib.h>
 int main() { // the main file
 	
-	lexer_T* lexer = lexer_create("e", "<stdin>");
+	lexer_T* lexer = lexer_create("5*8+3*5", "<stdin>");
 	list_T* list = lexer_make_tokens(lexer);
 	if (lexer->error != NULL) {
 		char* res = error_as_string(lexer->error);
@@ -20,7 +21,9 @@ int main() { // the main file
 	//node_T* node = binopnode_create(numbernode_create(token_create(0, "1")), token_create(2, NULL), numbernode_create(token_create(0, "2")));
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
-	node_print(node);
+
+	number_T number = visit(node);
+	printf("%d\n", number.i);
 
 	list_destroy(list);
 }

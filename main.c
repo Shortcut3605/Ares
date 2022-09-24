@@ -26,11 +26,10 @@ string_T* read_file(const char* filename){
 
 int main(int argc, char** argv) { // the main file
 
-	char buff[1024];
-	printf("Enter filename: ");
-	scanf("%s",&buff);
-	puts("");
-	string_T* src = read_file(buff);
+	if(argc < 2){
+		return 1;
+	}
+	string_T* src = read_file(argv[1]);
 	if(src==NULL){return 1;}
 	lexer_T* lexer = lexer_create(src->string, "<stdin>");
 	list_T* list = lexer_make_tokens(lexer);
@@ -44,7 +43,7 @@ int main(int argc, char** argv) { // the main file
 	//node_T* node = binopnode_create(numbernode_create(token_create(0, "1")), token_create(2, NULL), numbernode_create(token_create(0, "2")));
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
-	node_print(node);
+	//node_print(node);
 	number_T number = visit(node);
 	switch (number.type) {
 	case 1: printf("%d\n", number.value.i); break;

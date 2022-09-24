@@ -2,10 +2,10 @@
 #define NUMBER_H
 #include "position.h"
 typedef struct NUMBER_STRUCT {
-	union NUMBER_UNION{
+	union{
 		int i;
 		float f;
-	};
+	} value;
 	int type;
 	position_T* pos_start;
 	position_T* pos_end;

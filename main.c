@@ -24,8 +24,8 @@ int main() { // the main file
 
 	number_T number = visit(node);
 	switch (number.type) {
-	case 1: printf("%d\n", number.i); break;
-	case 2: printf("%f\n", number.f); break;
+	case 1: printf("%d\n", number.value.i); break;
+	case 2: printf("%f\n", number.value.f); break;
 	}
 	
 

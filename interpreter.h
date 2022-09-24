@@ -1,4 +1,4 @@
-#ifndef INTERPERTER_H
+#ifndef INTERPRETER_H
 #define INTERPRETER_H
 #include "node.h"
 #include "number.h"

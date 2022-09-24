@@ -16,7 +16,7 @@ void lexer_advance(lexer_T* lexer);
 
 void lexer_skip_whitespace(lexer_T* lexer);
 
-lexer_T* lexer_create(char* src);
+lexer_T* lexer_create(char* src, char* fn);
 
 token_T* lexer_make_number(lexer_T* lexer);
 

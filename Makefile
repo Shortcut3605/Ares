@@ -14,5 +14,5 @@ ${EXEC}: ${OBJ}
 %.o: %.c ${HDR}
 	${CC} ${CFLAGS} $< -o $@
 clean:
-	rm src/*.o
+	rm *.o
 	rm ${EXEC}

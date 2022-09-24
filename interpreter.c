@@ -60,8 +60,8 @@ number_T visit_UnaryOpNode(node_T* node) {
 	number_T number = visit(unop->right);
 	if (unop->op_tok->type == TT_MINUS) {
 		switch (number.type) {
-		case 1: number.i *= -1; break;
-		case 2: number.f *= -1; break;
+		case 1: number.value.i *= -1; break;
+		case 2: number.value.f *= -1; break;
 		default: printf("WHAT IS IN FRONT OF THAT NUMBER ????? \n"); break;
 		}
 	}

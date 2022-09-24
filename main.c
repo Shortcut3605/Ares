@@ -8,8 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 int main() { // the main file
-	
-	lexer_T* lexer = lexer_create("18.0 * 3.0", "<stdin>");
+	char buff[1024];
+	printf("Enter code: ");
+	scanf("%s",&buff);
+	puts("");
+	lexer_T* lexer = lexer_create(buff, "<stdin>");
 	list_T* list = lexer_make_tokens(lexer);
 	if (lexer->error != NULL) {
 		char* res = error_as_string(lexer->error);
@@ -21,7 +24,7 @@ int main() { // the main file
 	//node_T* node = binopnode_create(numbernode_create(token_create(0, "1")), token_create(2, NULL), numbernode_create(token_create(0, "2")));
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
-
+	node_print(node);
 	number_T number = visit(node);
 	switch (number.type) {
 	case 1: printf("%d\n", number.value.i); break;

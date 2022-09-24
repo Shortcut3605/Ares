@@ -21,6 +21,8 @@ string_T* read_file(const char* filename){
 		ch = fgetc(ptr);
 		string_push(res, ch);
 	}
+	res->str_size--;
+	res->string[res->str_size]='\0';
 	return res;
 }
 

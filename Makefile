@@ -16,3 +16,7 @@ ${EXEC}: ${OBJ}
 clean:
 	rm *.o
 	rm ${EXEC}
+
+run:
+	make
+	./ares main.ares

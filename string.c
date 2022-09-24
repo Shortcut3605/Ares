@@ -12,7 +12,7 @@ string_T* string_create(int size) { // INVALID SIZE?
 }
 
 string_T* string_create_string(char* string) {
-	string_T* string_type = string_create(1);
+	string_T* string_type = string_create(4);
 	string_push_string(string_type, string);
 	return string_type;
 }
@@ -30,15 +30,15 @@ void string_push(string_T* string, char item) {
 }
 
 void string_push_string(string_T* string, char* item) {
-	int diff = strlen(string->string) - strlen(item);
+	int diff = string->str_size - strlen(item);
 	if (diff < 0) {
 		diff = abs(diff);
 		string->size += diff;
-		string->str_size += diff;
 		string->string = realloc(string->string, string->size);
 	}
 	for (int i = 0; i < strlen(item); i++) {
-		string_push(string, *(item + i));
+		char ch = *(item+i);
+		string_push(string, ch);
 	}
 }
 

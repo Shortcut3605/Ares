@@ -64,3 +64,7 @@ error_T* IllegalCharacterError(char* details, position_T* position_start, positi
 error_T* InvalidSyntaxError(char* details, position_T* position_start, position_T* position_end) {
 	return error_create("Invalid Syntax", details, position_start, position_end);
 }
+
+error_T* RTError(char* details, position_T* position_start, position_T* position_end){
+	return error_create("Runtime Error", details, position_start, position_end);
+}

@@ -2,6 +2,8 @@
 #include "node.h"
 #include "number.h"
 #include "token.h"
+#include "result.h"
+#include "error.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -23,7 +25,7 @@ position_T* get_endpos(node_T* node) {
 	}
 }
 
-number_T visit(node_T* node) {
+rtresult_T visit(node_T* node) {
 	switch (node->type) {
 	case NT_NUMBER: return visit_NumberNode(node); break;
 	case NT_BINOP: return visit_BinOpNode(node); break;
@@ -32,19 +34,22 @@ number_T visit(node_T* node) {
 	}
 }
 
-number_T visit_NumberNode(node_T* node) {
+rtresult_T visit_NumberNode(node_T* node) {
 	numbernode_T* nn = (numbernode_T*)node;
 	if (nn->tok->hasDecimal) {
-		return set_pos(number_create(2, -1, atof(nn->tok->value)), node->pos_start, node->pos_end);
+		return rtresult_success(rtresult_create(),set_pos(number_create(2, -1, atof(nn->tok->value)), node->pos_start, node->pos_end));
 	}
-	return set_pos(number_create(1, atoi(nn->tok->value) ,-1.0), node->pos_start, node->pos_end);
+	return rtresult_success(rtresult_create(),set_pos(number_create(1, atoi(nn->tok->value) ,-1.0), node->pos_start, node->pos_end));
 }
 
-number_T visit_BinOpNode(node_T* node) {
+rtresult_T visit_BinOpNode(node_T* node) {
 	binopnode_T* bn = (binopnode_T*)node;
-	number_T left = visit(bn->left);
-	number_T right = visit(bn->right);
-	number_T result;
+	rtresult_T res = rtresult_create();
+	number_T left = rtresult_register(&res,visit(bn->left));
+	if(res.error){return res;}
+	number_T right = rtresult_register(&res,visit(bn->right));
+	if(res.error){return res;}
+	rtresult_T result;
 	switch (bn->op_tok->type) {
 	case TT_PLUS: result = added_to(left, right); break;
 	case TT_MINUS: result = subbed_by(left, right); break;
@@ -52,18 +57,25 @@ number_T visit_BinOpNode(node_T* node) {
 	case TT_DIV: result = divided_by(left, right); break;
 	default: printf("UNEXPECTED TOKEN\n"); break;
 	}
-	return set_pos(result, node->pos_start, node->pos_end);
+	if(result.error){
+		return rtresult_failure(res,result.error);
+	}
+	return rtresult_success(rtresult_create(),set_pos(result.number, node->pos_start, node->pos_end));
 }
 
-number_T visit_UnaryOpNode(node_T* node) {
+rtresult_T visit_UnaryOpNode(node_T* node) { 
 	unaryopnode_T* unop = (unaryopnode_T*)node;
-	number_T number = visit(unop->right);
-	if (unop->op_tok->type == TT_MINUS) {
-		switch (number.type) {
-		case 1: number.value.i *= -1; break;
-		case 2: number.value.f *= -1; break;
-		default: printf("WHAT IS IN FRONT OF THAT NUMBER ????? \n"); break;
-		}
+	rtresult_T res = rtresult_create();
+	number_T number = rtresult_register(&res,visit(unop->right));
+	if(res.error){
+		return res;
 	}
-	return set_pos(number, node->pos_start, node->pos_end);
+	rtresult_T result = rtresult_create();
+	if (unop->op_tok->type == TT_MINUS) {
+		result = multed_by(number, number_create(1,-1,0));
+	}
+	if(result.error){
+		return rtresult_failure(res, result.error);
+	}
+	return rtresult_success(rtresult_create(),set_pos(number, node->pos_start, node->pos_end));
 }

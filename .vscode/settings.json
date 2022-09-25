@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "math.h": "c"
+        "math.h": "c",
+        "number.h": "c",
+        "result.h": "c",
+        "interpreter.h": "c",
+        "error.h": "c"
     }
 }

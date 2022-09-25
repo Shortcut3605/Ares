@@ -46,10 +46,17 @@ int main(int argc, char** argv) { // the main file
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
 	//node_print(node);
-	number_T number = visit(node);
-	switch (number.type) {
-	case 1: printf("%d\n", number.value.i); break;
-	case 2: printf("%f\n", number.value.f); break;
+	rtresult_T res = visit(node);
+	if(res.error){
+		char* _error = error_as_string(lexer->error);
+		printf("%s\n", _error);
+		free(_error);
+		error_destroy(_error);
+		exit(1);
+	}
+	switch(res.number.type){
+		case 1: printf("%d\n",res.number.value.i); break;
+		case 2: printf("%f\n",res.number.value.f); break;
 	}
 	
 

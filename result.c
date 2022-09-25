@@ -8,9 +8,9 @@ rtresult_T rtresult_create(){
     return res;
 }
 
-number_T rtresult_register( rtresult_T current, rtresult_T res){
+number_T rtresult_register( rtresult_T* current, rtresult_T res){
     if(res.error != NULL){
-        current.error = res.error;
+        current->error = res.error;
     }
     return res.number; 
 }

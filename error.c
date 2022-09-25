@@ -5,6 +5,7 @@
 #include<stdio.h>
 #include<string.h>
 
+
 error_T* error_create(char* error_name, char* details, position_T* position_start, position_T* position_end) {
 	error_T* error = malloc(sizeof(struct ERROR_STRUCT));
 	error->error_name = error_name;

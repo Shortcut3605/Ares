@@ -12,10 +12,14 @@ error_T* error_create(char* error_name, char* details, position_T* position_star
 	error->details = details;
 	error->position_start = position_start;
 	error->position_end = position_end;	
+	error->rterror = 0;
 	return error;
 }
 
 char* error_as_string(error_T* error) {
+	if(error->rterror){
+		return rterror_as_string(error);
+	}
 	const char* template = "%s: %s\nFile %s, line %d\n\n%s";
 	char* str = error_add_arrows(error->position_start->ftxt, error->position_start, error->position_end);
 	char* buff = malloc(((sizeof(template) + sizeof(error->error_name) + sizeof(error->details) + sizeof(error->position_start->fn) + sizeof(str)) * sizeof(char) + ((sizeof(error->position_start->ln)) * sizeof(int)) + 1));
@@ -66,6 +70,38 @@ error_T* InvalidSyntaxError(char* details, position_T* position_start, position_
 	return error_create("Invalid Syntax", details, position_start, position_end);
 }
 
-error_T* RTError(char* details, position_T* position_start, position_T* position_end){
-	return error_create("Runtime Error", details, position_start, position_end);
+
+error_T* RTError(char* details, position_T* position_start, position_T* position_end, context_T context){
+	error_T* error = error_create("Runtime Error", details, position_start, position_end);
+	error->context = context;
+	error->rterror = 1;
+	return error;
+}
+
+char* rterror_as_string(error_T* error){
+	const char* template = rterror_generate_traceback(error);
+	char* str = error_add_arrows(error->position_start->ftxt, error->position_start, error->position_end);
+	char* buff = malloc(sizeof(template) + sizeof(str) + 1);
+	sprintf(buff, template, str);
+	return buff;
+}
+
+char* rterror_generate_traceback(error_T* error){
+	string_T* result = string_create(4);
+	position_T* pos_start = error->position_start;
+	int parent_entry_pos = -1;
+	context_T context = error->context;
+	while(context._null != 1){
+		const char* template = "File %s, line %d, in %s\n";
+		char* buff = malloc((sizeof(template) + sizeof(context.display_name) + sizeof(pos_start->fn)) * sizeof(char) + sizeof(int));
+		sprintf(buff, template, pos_start->fn, pos_start->ln+1, context.display_name);
+		string_push_string(result, template);
+		string_push_string(result, result->string);
+		pos_start = context.parent_entry_pos;
+		context = *context.parent;
+	}
+	string_T* res = string_create(4);
+	string_push_string(res, "Traceback(most recent call last):\n");
+	string_push_string(res, result->string);
+	return res->string;
 }

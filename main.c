@@ -6,6 +6,7 @@
 #include "interpreter.h"
 #include "error.h"
 #include "string.h"
+#include "context.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -46,7 +47,10 @@ int main(int argc, char** argv) { // the main file
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
 	//node_print(node);
-	rtresult_T res = visit(node);
+	context_T context;
+	context.display_name = "<program>";
+	context._null = 1;
+	rtresult_T res = visit(node, context);
 	if(res.error != NULL){
 		char* _error = error_as_string(res.error);
 		printf("%s\n", _error);

@@ -4,50 +4,33 @@
 #include "token.h"
 #include "result.h"
 #include "error.h"
+#include "context.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-position_T* get_startpos(node_T* node) {
+rtresult_T visit(node_T* node, context_T context) {
 	switch (node->type) {
-	case NT_NUMBER: return position_copy(((numbernode_T*)node)->tok->position); break;
-	case NT_BINOP: return get_startpos(((binopnode_T*)node)->left); break;
-	case NT_UNARY: return position_copy(((unaryopnode_T*)node)->op_tok->position); break;
-	default: return NULL;
-	}
-}
-
-position_T* get_endpos(node_T* node) {
-	switch (node->type) {
-	case NT_NUMBER: return position_copy(((numbernode_T*)node)->tok->position_end); break;
-	case NT_BINOP: return get_startpos(((binopnode_T*)node)->left); break;
-	case NT_UNARY: return position_copy(((unaryopnode_T*)node)->op_tok->position); break;
-	default: return NULL;
-	}
-}
-
-rtresult_T visit(node_T* node) {
-	switch (node->type) {
-	case NT_NUMBER: return visit_NumberNode(node); break;
-	case NT_BINOP: return visit_BinOpNode(node); break;
-	case NT_UNARY: return visit_UnaryOpNode(node); break;
+	case NT_NUMBER: return visit_NumberNode(node, context); break;
+	case NT_BINOP: return visit_BinOpNode(node, context); break;
+	case NT_UNARY: return visit_UnaryOpNode(node, context); break;
 	default: break;
 	}
 }
 
-rtresult_T visit_NumberNode(node_T* node) {
+rtresult_T visit_NumberNode(node_T* node, context_T context) {
 	numbernode_T* nn = (numbernode_T*)node;
 	if (nn->tok->hasDecimal) {
-		return rtresult_success(rtresult_create(),set_pos(number_create(2, -1, atof(nn->tok->value)), node->pos_start, node->pos_end));
+		return rtresult_success(rtresult_create(),set_context(set_pos(number_create(2, -1, atof(nn->tok->value)), node->pos_start, node->pos_end),context));
 	}
-	return rtresult_success(rtresult_create(),set_pos(number_create(1, atoi(nn->tok->value) ,-1.0), node->pos_start, node->pos_end));
+	return rtresult_success(rtresult_create(),set_context(set_pos(number_create(1, atoi(nn->tok->value) ,-1.0), node->pos_start, node->pos_end),context));
 }
 
-rtresult_T visit_BinOpNode(node_T* node) {
+rtresult_T visit_BinOpNode(node_T* node, context_T context) {
 	binopnode_T* bn = (binopnode_T*)node;
 	rtresult_T res = rtresult_create();
-	number_T left = rtresult_register(&res,visit(bn->left));
+	number_T left = rtresult_register(&res,visit(bn->left, context));
 	if(res.error){return res;}
-	number_T right = rtresult_register(&res,visit(bn->right));
+	number_T right = rtresult_register(&res,visit(bn->right, context));
 	if(res.error){return res;}
 	rtresult_T result;
 	switch (bn->op_tok->type) {
@@ -63,10 +46,10 @@ rtresult_T visit_BinOpNode(node_T* node) {
 	return rtresult_success(rtresult_create(),set_pos(result.number, node->pos_start, node->pos_end));
 }
 
-rtresult_T visit_UnaryOpNode(node_T* node) { 
+rtresult_T visit_UnaryOpNode(node_T* node, context_T context) { 
 	unaryopnode_T* unop = (unaryopnode_T*)node;
 	rtresult_T res = rtresult_create();
-	number_T number = rtresult_register(&res,visit(unop->right));
+	number_T number = rtresult_register(&res,visit(unop->right, context));
 	if(res.error){
 		return res;
 	}

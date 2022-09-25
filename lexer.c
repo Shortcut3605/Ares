@@ -36,7 +36,7 @@ lexer_T* lexer_create(char* src, char* fn) {
 token_T* lexer_make_number(lexer_T* lexer) { // TODO MAKE STRINGS MORE EFFICIENT : A FINISH STRING METHOD TO MAKE SURE NOT ALLOCATING UNNECESSARY MEMORY
 	string_T* value = string_create(1);
 	char dot = 0;
-	position_T* start_pos = lexer->pos;
+	position_T* start_pos = position_copy(lexer->pos);
 	while (('0' <= lexer->current_char && lexer->current_char <= '9') || lexer->current_char == '.')
 	{
 		if (lexer->current_char == '.') {
@@ -49,7 +49,7 @@ token_T* lexer_make_number(lexer_T* lexer) { // TODO MAKE STRINGS MORE EFFICIENT
 		string_push(value, lexer->current_char);
 		lexer_advance(lexer);
 	}
-
+	
 	if (dot) {
 		token_T* tok = token_create(TT_FLOAT, value->string, start_pos, lexer->pos);
 		tok->hasDecimal = 1;

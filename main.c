@@ -45,7 +45,7 @@ int main(int argc, char** argv) { // the main file
 	//node_T* node = binopnode_create(numbernode_create(token_create(0, "1")), token_create(2, NULL), numbernode_create(token_create(0, "2")));
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
-	node_print(node);
+	//node_print(node);
 	rtresult_T res = visit(node);
 	if(res.error != NULL){
 		char* _error = error_as_string(res.error);

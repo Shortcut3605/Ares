@@ -2,19 +2,8 @@
 #define NUMBER_H
 #include "position.h"
 #include "error.h"
-typedef struct NUMBER_STRUCT {
-	union{
-		int i;
-		float f;
-	} value;
-	int type;
-	position_T* pos_start;
-	position_T* pos_end;
-} number_T;
-typedef struct RTRESULT_STRUCT {
-    number_T number;
-    error_T* error;
-} rtresult_T;
+#include "result_struct.h"
+#include "number_struct.h"
 
 number_T number_create(int type, int value, float value_f);
 

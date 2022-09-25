@@ -4,7 +4,8 @@
 #include "error.h"
 
 //RUNTIME RESULT
-#include "number.h"
+#include "result_struct.h"
+#include "number_struct.h"
 
 rtresult_T rtresult_create();
 

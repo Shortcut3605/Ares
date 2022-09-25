@@ -73,7 +73,7 @@ rtresult_T multed_by(number_T current, number_T other) {
 
 rtresult_T divided_by(number_T current, number_T other) {
 	rtresult_T res = rtresult_create();
-	if(other.value.i = 0){
+	if(other.value.i == 0){
 		res.error = RTError("Division by zero",other.pos_start, other.pos_end);
 		res.number = number_create(1, 1, 1);
 		return res;

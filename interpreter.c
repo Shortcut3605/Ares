@@ -13,7 +13,7 @@ rtresult_T visit(node_T* node, context_T context) {
 	case NT_NUMBER: return visit_NumberNode(node, context); break;
 	case NT_BINOP: return visit_BinOpNode(node, context); break;
 	case NT_UNARY: return visit_UnaryOpNode(node, context); break;
-	default: break;
+	default: {printf("WTF\n"); exit(1);} break;
 	}
 }
 

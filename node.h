@@ -6,6 +6,8 @@ typedef struct NODE_STRUCT {
 		NT_NUMBER,
 		NT_BINOP,
 		NT_UNARY,
+		NT_VARACCESS,
+		NT_VARASSIGN,
 	} type;
 	position_T* pos_start;
 	position_T* pos_end;
@@ -39,5 +41,20 @@ typedef struct UNARYOPNODE_STRUCT
 } unaryopnode_T;
 
 node_T* unaryopnode_create(token_T* op_tok, node_T* right);
+
+typedef struct VARACCESSNODE_STRUCT{
+	node_T node;
+	token_T* var_name_tok;
+} varaccessnode_T;
+
+node_T* varaccessnode_create(token_T* var_name_tok);
+
+typedef struct VARASSIGNNODE_STRUCT{
+	node_T node;
+	token_T* var_name_tok;
+	node_T* value_node;
+} varassignnode_T;
+
+node_T* varassignnode_create(token_T* var_name_tok, node_T* value_node);
 
 #endif

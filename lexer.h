@@ -20,6 +20,10 @@ lexer_T* lexer_create(char* src, char* fn);
 
 token_T* lexer_make_number(lexer_T* lexer);
 
+char isKeyword(char* str);
+
+token_T* lexer_make_identifier(lexer_T* lexer);
+
 list_T* lexer_make_tokens(lexer_T* lexer);
 
 #endif // !LEXER_H

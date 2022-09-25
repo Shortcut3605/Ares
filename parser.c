@@ -36,6 +36,12 @@ node_T* atom(parser_T* parser){
 		}
 		return expr;
 	}
+	else if(tok->type == TT_IDENTIFIER){
+		parser_advance(parser);
+		return varaccessnode_create(tok);
+	}
+	printf("<PARSER FACTOR Invalid syntax: expected INT or FLOAT in FILE %s, LINE %d COL %d", tok->position->fn, tok->position->ln , tok->position->col);
+	exit(1);
 }
 
 node_T* parser_power(parser_T* parser){
@@ -52,8 +58,7 @@ node_T* parser_factor(parser_T* parser) {
 		return unaryopnode_create(tok, factor);
 	}
 	return parser_power(parser);
-	printf("<PARSER FACTOR Invalid syntax: expected INT or FLOAT in FILE %s, LINE %d COL %d", tok->position->fn, tok->position->ln , tok->position->col);
-	exit(1);
+	
 }
 
 node_T* parser_term(parser_T* parser) {
@@ -61,6 +66,24 @@ node_T* parser_term(parser_T* parser) {
 }
 
 node_T* parser_expr(parser_T* parser) {
+	token_T* var_name = NULL;
+	node_T* expr = NULL;
+	if(matches(parser->current_tok, TT_KEYWORD, "var")){
+		parser_advance(parser);
+		if(parser->current_tok->type != TT_IDENTIFIER){
+			printf("FAILURE");
+			exit(1);
+		}
+		var_name = parser->current_tok;
+		parser_advance(parser);
+		if(parser->current_tok->type != TT_EQ){
+			printf("FAILURE EQ");
+			exit(1);
+		}
+		parser_advance(parser);
+		expr = parser_expr(parser);
+		return varassignnode_create(var_name, expr);
+	}
 	return bin_op(parser, 1, TT_PLUS, TT_MINUS, 1);
 }
 

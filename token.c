@@ -2,6 +2,7 @@
 #include "position.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 token_T* token_create(int type, char* value, position_T* position, position_T* position_end) {
 	token_T* token = malloc(sizeof(struct TOKEN_STRUCT));
@@ -39,4 +40,11 @@ char* token_type_to_str(int type) {
 
 void token_print(token_T* token) {
 	printf("<TOKEN PRINT type = `%s`, value = `%s`>\n", token_type_to_str(token->type), (token->value == NULL) ? "NONE" : token->value);
+}
+
+char matches(token_T* tok, int type, char* value){
+	if(tok->type == type && strcmp(tok->value,value)==0){
+		return 1;
+	}
+	return 0;
 }

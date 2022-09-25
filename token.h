@@ -6,11 +6,14 @@ typedef struct TOKEN_STRUCT {
 	enum {
 		TT_INT,
 		TT_FLOAT,
+		TT_IDENTIFIER,
+		TT_KEYWORD,
 		TT_PLUS,
 		TT_MINUS,
 		TT_MUL,
 		TT_DIV,
 		TT_POW,
+		TT_EQ,
 		TT_LPAREN,
 		TT_RPAREN,
 		TT_EOF,
@@ -25,6 +28,8 @@ char* token_type_to_str(int type);
 token_T* token_create(int type, char* value , position_T* position, position_T* position_end);
 
 void token_print(token_T* token);
+
+char matches(token_T* tok, int type, char* value);
 
 #endif // !TOKEN_H
 

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
 void lexer_advance(lexer_T* lexer) {
 	position_advance(lexer->pos, lexer->current_char);
@@ -60,6 +61,35 @@ token_T* lexer_make_number(lexer_T* lexer) { // TODO MAKE STRINGS MORE EFFICIENT
 	}
 }
 
+char isKeyword(char* str){
+	char* KEYWORDS[] = {"var"};
+	int KEYWORDS_LEN = 1;
+	
+	for(int i = 0; i < KEYWORDS_LEN; i++){
+		if(strcmp(KEYWORDS[i],str)==0){
+			return 1;
+		}	
+	}
+	return 0;
+}
+
+token_T* lexer_make_identifier(lexer_T* lexer) {
+	string_T* id_str = string_create(4);
+	position_T* pos_start = position_copy(lexer->pos);
+	while(lexer->current_char != -1 && ((isdigit(lexer->current_char) || isalpha(lexer->current_char)) || lexer->current_char == '_')){
+		string_push(id_str, lexer->current_char);
+		lexer_advance(lexer);
+	}
+	token_T* tok;
+	
+	if(isKeyword(id_str->string)){
+		tok = token_create(TT_KEYWORD, id_str->string, pos_start ,lexer->pos);
+		return tok;
+	}
+	tok = token_create(TT_IDENTIFIER, id_str->string, pos_start ,lexer->pos);
+	return tok;
+}
+
 list_T* lexer_make_tokens(lexer_T* lexer) {
 	list_T* list = list_create(1);
 
@@ -68,6 +98,9 @@ list_T* lexer_make_tokens(lexer_T* lexer) {
 		if ('0' <= lexer->current_char && lexer->current_char <= '9') {
 			list_push(list, (void*)lexer_make_number(lexer));
 			continue;
+		}
+		else if('a' <= lexer->current_char && lexer->current_char <= 'z'){
+			list_push(list, (void*)lexer_make_identifier(lexer));
 		}
 		else {
 			if (lexer->current_char == -1) {
@@ -80,6 +113,7 @@ list_T* lexer_make_tokens(lexer_T* lexer) {
 				case '*': list_push(list, (void*)token_create(TT_MUL, NULL, lexer->pos, NULL)); break;
 				case '/': list_push(list, (void*)token_create(TT_DIV, NULL, lexer->pos, NULL)); break;
 				case '^': list_push(list, (void*)token_create(TT_POW, NULL, lexer->pos, NULL)); break;
+				case '=': list_push(list, (void*)token_create(TT_EQ, NULL, lexer->pos, NULL)); break;
 				case '(': list_push(list, (void*)token_create(TT_LPAREN, NULL, lexer->pos, NULL)); break;
 				case ')': list_push(list, (void*)token_create(TT_RPAREN, NULL, lexer->pos, NULL)); break;
 				default: {

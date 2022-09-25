@@ -28,6 +28,8 @@ void node_print(node_T* node) {
 		node_print(((unaryopnode_T*)node)->right);
 		printf(")\n");
 		break;
+	default:
+		printf("?????? WHAT IS DIS NODE\n"); exit(1); break;
 	}
 }
 
@@ -55,4 +57,19 @@ node_T* unaryopnode_create(token_T* op_tok, node_T* right) {
 	unaryopnode->op_tok = op_tok;
 	unaryopnode->right = right;
 	return &(unaryopnode->node);
+}
+
+node_T* varaccessnode_create(token_T* var_name_tok){
+	varaccessnode_T* varaccessnode = malloc(sizeof(struct VARACCESSNODE_STRUCT));
+	varaccessnode->var_name_tok = var_name_tok;
+	varaccessnode->node = node_create(NT_VARACCESS, var_name_tok->position, var_name_tok->position_end);
+	return &(varaccessnode->node);
+}
+
+node_T* varassignnode_create(token_T* var_name_tok, node_T* value_node){
+	varassignnode_T* varassignnode = malloc(sizeof(struct VARASSIGNNODE_STRUCT));
+	varassignnode->var_name_tok = var_name_tok;
+	varassignnode->value_node = value_node;
+	varassignnode->node = node_create(NT_VARASSIGN, var_name_tok->position, var_name_tok->position_end);
+	return &(varassignnode->node);
 }

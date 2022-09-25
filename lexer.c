@@ -79,6 +79,7 @@ list_T* lexer_make_tokens(lexer_T* lexer) {
 				case '-': list_push(list, (void*)token_create(TT_MINUS, NULL, lexer->pos, NULL)); break;
 				case '*': list_push(list, (void*)token_create(TT_MUL, NULL, lexer->pos, NULL)); break;
 				case '/': list_push(list, (void*)token_create(TT_DIV, NULL, lexer->pos, NULL)); break;
+				case '^': list_push(list, (void*)token_create(TT_POW, NULL, lexer->pos, NULL)); break;
 				case '(': list_push(list, (void*)token_create(TT_LPAREN, NULL, lexer->pos, NULL)); break;
 				case ')': list_push(list, (void*)token_create(TT_RPAREN, NULL, lexer->pos, NULL)); break;
 				default: {

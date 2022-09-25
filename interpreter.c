@@ -38,6 +38,7 @@ rtresult_T visit_BinOpNode(node_T* node, context_T context) {
 	case TT_MINUS: result = subbed_by(left, right); break;
 	case TT_MUL: result = multed_by(left, right); break;
 	case TT_DIV: result = divided_by(left, right); break;
+	case TT_POW: result = powed_by(left, right); break;
 	default: printf("UNEXPECTED TOKEN\n"); break;
 	}
 	if(result.error){

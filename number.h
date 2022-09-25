@@ -15,6 +15,8 @@ rtresult_T multed_by(number_T current, number_T other);
 
 rtresult_T divided_by(number_T current, number_T other);
 
+rtresult_T powed_by(number_T current, number_T other);
+
 number_T set_pos(number_T number,position_T* start, position_T* end);
 
 number_T set_context(number_T number, context_T context);

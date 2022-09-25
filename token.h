@@ -10,6 +10,7 @@ typedef struct TOKEN_STRUCT {
 		TT_MINUS,
 		TT_MUL,
 		TT_DIV,
+		TT_POW,
 		TT_LPAREN,
 		TT_RPAREN,
 		TT_EOF,

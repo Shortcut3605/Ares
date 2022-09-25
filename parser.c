@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "token.h"
+#include "math.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -19,16 +20,11 @@ void parser_advance(parser_T* parser) {
 	}
 }
 
-node_T* parser_factor(parser_T* parser) {
+node_T* atom(parser_T* parser){
 	token_T* tok = parser->current_tok;
 	node_T* factor = NULL;
 	node_T* expr = NULL;
-	if (tok->type == TT_PLUS || tok->type == TT_MINUS) {
-		parser_advance(parser);
-		factor = parser_factor(parser);
-		return unaryopnode_create(tok, factor);
-	}
-	else if (tok->type == TT_INT || tok->type == TT_FLOAT) {
+	if (tok->type == TT_INT || tok->type == TT_FLOAT) {
 		parser_advance(parser);
 		return numbernode_create(tok);
 	}
@@ -40,16 +36,32 @@ node_T* parser_factor(parser_T* parser) {
 		}
 		return expr;
 	}
+}
+
+node_T* parser_power(parser_T* parser){
+	return bin_op(parser, 2, TT_POW, TT_POW, 0);
+}
+
+node_T* parser_factor(parser_T* parser) {
+	token_T* tok = parser->current_tok;
+	node_T* factor = NULL;
+	node_T* expr = NULL;
+	if (tok->type == TT_PLUS || tok->type == TT_MINUS) {
+		parser_advance(parser);
+		factor = parser_factor(parser);
+		return unaryopnode_create(tok, factor);
+	}
+	return parser_power(parser);
 	printf("<PARSER FACTOR Invalid syntax: expected INT or FLOAT in FILE %s, LINE %d COL %d", tok->position->fn, tok->position->ln , tok->position->col);
 	exit(1);
 }
 
 node_T* parser_term(parser_T* parser) {
-	return bin_op(parser, 0, TT_MUL, TT_DIV);
+	return bin_op(parser, 0, TT_MUL, TT_DIV, 0);
 }
 
 node_T* parser_expr(parser_T* parser) {
-	return bin_op(parser, 1, TT_PLUS, TT_MINUS);
+	return bin_op(parser, 1, TT_PLUS, TT_MINUS, 1);
 }
 
 node_T* parser_parse(parser_T* parser) {
@@ -69,20 +81,22 @@ position_T* node_position(node_T* node) {
 	}
 }
 
-node_T* bin_op(parser_T* parser, int type, int OP1, int OP2) {
+node_T* bin_op(parser_T* parser, int type, int OP1, int OP2, int type2) {
 	node_T* left = NULL;
 	node_T* right = NULL;
 	token_T* op_tok = NULL;
 	switch (type) {
 	case 0: left = parser_factor(parser); break;
 	case 1: left = parser_term(parser); break;
+	case 2: left = atom(parser); break;
 	}
 	while (parser->current_tok->type == OP1 || parser->current_tok->type == OP2) {
 		op_tok = parser->current_tok;
 		parser_advance(parser);
-		switch (type) {
+		switch (type2) {
 		case 0: right = parser_factor(parser); break;
 		case 1: right = parser_term(parser); break;
+		case 2: right = atom(parser); break;
 		}
 		left = binopnode_create(left, op_tok, right);
 	}

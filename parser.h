@@ -12,6 +12,10 @@ parser_T* parser_create(list_T* tokenlist);
 
 void parser_advance(parser_T* parser);
 
+node_T* atom(parser_T* parser);
+
+node_T* parser_power(parser_T* parser);
+
 node_T* parser_factor(parser_T* parser);
 
 node_T* parser_term(parser_T* parser);
@@ -22,6 +26,6 @@ node_T* parser_parse(parser_T* parser);
 
 position_T* node_position(node_T* node);
 
-node_T* bin_op(parser_T* parser, int type, int OP1, int OP2);
+node_T* bin_op(parser_T* parser, int type, int OP1, int OP2 ,int type2);
 
 #endif

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -std=c99 -g
+CFLAGS = -c -std=c99 -g -lm
 LDFLAGS = -g
 SRC =  $(wildcard *.c)
 HDR = $(wildcard *.h)

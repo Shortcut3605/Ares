@@ -1,5 +1,6 @@
 #include "number.h"
 #include "result.h"
+#include "math.h"
 #include <stdio.h>
 
 number_T number_create(int type, int value, float value_f){
@@ -92,6 +93,28 @@ rtresult_T divided_by(number_T current, number_T other) {
 		
 		current.value.f = (float)current.value.i;
 		res.number = set_context(number_create(2, -1, (current.value.f / other.value.f)), current.context);
+		return res;
+	}
+}
+
+rtresult_T powed_by(number_T current, number_T other){
+	rtresult_T res = rtresult_create();
+	if(other.type == current.type){
+		if(current.type == 1){
+			res.number = set_context(number_create(current.type, (int)power((float)current.value.i, (float)other.value.i), -1.0),current.context);
+			return res;
+		}
+		res.number = set_context(number_create(current.type, -1, power(current.value.f, other.value.f)),current.context);
+		return res;
+	}
+	else{
+		if(current.type == 2){
+			other.value.f = (float)other.value.i;
+			res.number = set_context(number_create(current.type, -1, power(current.value.f, other.value.f)),current.context);
+			return res;
+		}
+		current.value.f = (float)current.value.i;
+		res.number = set_context(number_create(current.type, -1, power(current.value.f, other.value.f)),current.context);
 		return res;
 	}
 }

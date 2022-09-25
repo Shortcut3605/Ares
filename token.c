@@ -30,6 +30,7 @@ char* token_type_to_str(int type) {
 	case TT_MINUS: return "TT_MINUS";
 	case TT_MUL: return "TT_MUL";
 	case TT_DIV: return "TT_DIV";
+	case TT_POW: return "TT_POW";
 	case TT_LPAREN: return "TT_LPAREN";
 	case TT_RPAREN: return "T_RPAREN";
 	default: { printf("<TOKEN TYPE TO STR encountered type `%d`>", type); exit(1); } break;

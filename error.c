@@ -79,27 +79,46 @@ error_T* RTError(char* details, position_T* position_start, position_T* position
 }
 
 char* rterror_as_string(error_T* error){
-	const char* template = rterror_generate_traceback(error);
+	char* template = rterror_generate_traceback(error);
 	char* str = error_add_arrows(error->position_start->ftxt, error->position_start, error->position_end);
-	char* buff = malloc(sizeof(template) + sizeof(str) + 1);
-	sprintf(buff, template, str);
-	return buff;
+	string_T* buff = string_create(4);
+	string_push_string(buff, template);
+	string_push_string(buff, str);
+	return buff->string;
 }
 
 char* rterror_generate_traceback(error_T* error){
 	string_T* result = string_create(4);
 	position_T* pos_start = error->position_start;
 	int parent_entry_pos = -1;
+	char set = 0;
+	char num[50];
 	context_T context = error->context;
-	while(context._null != 1){
+	do{
 		const char* template = "File %s, line %d, in %s\n";
-		char* buff = malloc((sizeof(template) + sizeof(context.display_name) + sizeof(pos_start->fn)) * sizeof(char) + sizeof(int));
-		sprintf(buff, template, pos_start->fn, pos_start->ln+1, context.display_name);
-		string_push_string(result, template);
-		string_push_string(result, result->string);
+		string_T* buff = string_create(4);
+		string_push_string(buff, " File ");
+		sprintf(num, "%d", pos_start->ln+1);
+		string_push_string(buff, pos_start->fn);
+		string_push_string(buff, ", line ");
+		string_push_string(buff, num);
+		string_push_string(buff, ", in ");
+		string_push_string(buff, context.display_name);
+		string_push_string(buff, "\n");
+		if(set){
+			string_push_string(result, result->string);
+		}
+		set = 1;
+		string_push_string(result, buff->string);
+		
+		
+		if(context.parent == NULL){ 
+			break;
+			}
 		pos_start = context.parent_entry_pos;
 		context = *context.parent;
-	}
+		
+	} while(context.parent != NULL);
 	string_T* res = string_create(4);
 	string_push_string(res, "Traceback(most recent call last):\n");
 	string_push_string(res, result->string);

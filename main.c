@@ -47,9 +47,7 @@ int main(int argc, char** argv) { // the main file
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
 	//node_print(node);
-	context_T context;
-	context.display_name = "<program>";
-	context._null = 1;
+	context_T context = context_create("<program>", NULL, position_create(-1, -1, -1, NULL, NULL));
 	rtresult_T res = visit(node, context);
 	if(res.error != NULL){
 		char* _error = error_as_string(res.error);

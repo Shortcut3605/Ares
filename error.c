@@ -83,6 +83,10 @@ char* rterror_as_string(error_T* error){
 	char* str = error_add_arrows(error->position_start->ftxt, error->position_start, error->position_end);
 	string_T* buff = string_create(4);
 	string_push_string(buff, template);
+	string_push_string(buff, error->error_name);
+	string_push_string(buff, ": ");
+	string_push_string(buff, error->details);
+	string_push_string(buff, "\n");
 	string_push_string(buff, str);
 	return buff->string;
 }

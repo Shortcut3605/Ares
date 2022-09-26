@@ -116,6 +116,7 @@ list_T* lexer_make_tokens(lexer_T* lexer) {
 				case '=': list_push(list, (void*)token_create(TT_EQ, NULL, lexer->pos, NULL)); break;
 				case '(': list_push(list, (void*)token_create(TT_LPAREN, NULL, lexer->pos, NULL)); break;
 				case ')': list_push(list, (void*)token_create(TT_RPAREN, NULL, lexer->pos, NULL)); break;
+				case '\n': break;
 				default: {
 					position_T* position_start = position_copy(lexer->pos);
 					const char* template = "`%c`";

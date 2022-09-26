@@ -77,12 +77,12 @@ rtresult_T visit_VarAccessNode(node_T* node, context_T context){
 		string_T* output = string_create(4);
 		string_push_string(output, var_name);
 		string_push_string(output, " was not defined.");
-		return rtresult_failure(res, RTError(output, node->pos_start, node->pos_end, context));
+		return rtresult_failure(res, RTError(output->string, node->pos_start, node->pos_end, context));
 	}
 	number_T out_value;
 	switch(*type){
-		case 1: out_value = number_create(1, value->i, -1.0); break;
-		case 2: out_value = number_create(2, -1, value->f); break;
+		case 1: out_value = set_pos(number_create(1, value->i, -1.0), node->pos_start, node->pos_end); break;
+		case 2: out_value = set_pos(number_create(2, -1, value->f), node->pos_start, node->pos_end); break;
 	}
 	return rtresult_success(res, out_value);
 }

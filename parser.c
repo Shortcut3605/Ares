@@ -39,7 +39,8 @@ node_T* atom(parser_T* parser){
 		parser_advance(parser);
 		return varaccessnode_create(tok);
 	}
-	printf("<PARSER FACTOR Invalid syntax: expected INT or FLOAT in FILE %s, LINE %d COL %d", tok->position->fn, tok->position->ln , tok->position->col);
+	printf("<PARSER FACTOR Invalid syntax: expected INT or FLOAT in FILE %s, LINE %d COL %d\n", tok->position->fn, tok->position->ln , tok->position->col);
+	printf("%s",token_type_to_str(tok->type));
 	exit(1);
 }
 

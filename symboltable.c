@@ -20,10 +20,10 @@ symboltable_T* symboltable_create(symboltable_T* parent){
     symboltable->values = list_create(1);
     symboltable->types = list_create(1);
     symboltable->parent = parent;
+    return symboltable;
 }
 
 void symboltable_push(symboltable_T* symboltable, char* name, value_T value, int type){
-    printf("DONE");
     list_push(symboltable->keys, (void*)name);
     list_push(symboltable->types, (void*)type_create(type));
     list_push(symboltable->values, (void*)value_create(value));

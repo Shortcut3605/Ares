@@ -48,7 +48,10 @@ int main(int argc, char** argv) { // the main file
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
 	//node_print(node);
+	union VALUE_UNION v;
+	v.i = 5;
 	symboltable_T* global_symbol_table = symboltable_create(NULL);
+	symboltable_push(global_symbol_table, "a", v, 1);
 	context_T context = context_create("<program>", NULL, position_create(-1, -1, -1, NULL, NULL));
 	context.symboltable = global_symbol_table;
 	rtresult_T res = visit(node, context);

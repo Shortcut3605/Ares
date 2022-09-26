@@ -52,6 +52,8 @@ int main(int argc, char** argv) { // the main file
 	v.i = 5;
 	symboltable_T* global_symbol_table = symboltable_create(NULL);
 	symboltable_push(global_symbol_table, "a", v, 1);
+	v.f = 10.3;
+	symboltable_push(global_symbol_table, "a", v, 2);
 	context_T context = context_create("<program>", NULL, position_create(-1, -1, -1, NULL, NULL));
 	context.symboltable = global_symbol_table;
 	rtresult_T res = visit(node, context);

@@ -24,7 +24,7 @@ void parser_advance(parser_T* parser) {
 node_T* atom(parser_T* parser){
 	
 	token_T* tok = parser->current_tok;
-	printf("%s\n",token_type_to_str(tok->type));
+	//printf("%s\n",token_type_to_str(tok->type));
 	node_T* factor = NULL;
 	node_T* expr = NULL;
 	if (tok->type == TT_INT || tok->type == TT_FLOAT) {
@@ -172,12 +172,11 @@ char validBinOp(parser_T* parser,list_T* OPS, list_T* VALUES){
 		for(int i = 0; i < OPS->item_size; i++){
 			if(parser->current_tok->type == *((int*)OPS->data[i])){
 				if(parser->current_tok->value == ((char*)OPS->data[i]) || OPS->data[i] == NULL){
-					return 0;
+					return 1;
 				}
-				return 1;
 			}
 		}
-		return 1;
+		return 0;
 	}
 }
 
@@ -203,6 +202,7 @@ node_T* bin_op(parser_T* parser, int type, list_T* OPS,int type2, list_T* VALUES
 		case 4: right = parser_arith_expr(parser); break;
 		}
 		left = binopnode_create(left, op_tok, right);
+
 	}
 	if (right == NULL && op_tok != NULL) {
 		position_T* pos = node_position(left);
@@ -210,7 +210,7 @@ node_T* bin_op(parser_T* parser, int type, list_T* OPS,int type2, list_T* VALUES
 		exit(1);
 	}
 	if(type == 1){
-	node_print(left);
+		//node_print(left);
 	}
 	return left;
 }

@@ -13,4 +13,8 @@ rtresult_T visit_BinOpNode(node_T* node, context_T context);
 
 rtresult_T visit_UnaryOpNode(node_T* node, context_T context);
 
+rtresult_T visit_VarAccessNode(node_T* node, context_T context);
+
+rtresult_T visit_VarAssignNode(node_T* node, context_T context);
+
 #endif

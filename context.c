@@ -6,5 +6,6 @@ context_T context_create(char* display_name, context_T* parent, position_T* pare
     context.parent = parent;
     context.parent_entry_pos = parent_entry_pos;
     context._null = 0;
+    context.symboltable = NULL;
     return context;
 }

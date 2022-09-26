@@ -5,6 +5,7 @@
 #include "result.h"
 #include "error.h"
 #include "context.h"
+#include "string.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,6 +14,8 @@ rtresult_T visit(node_T* node, context_T context) {
 	case NT_NUMBER: return visit_NumberNode(node, context); break;
 	case NT_BINOP: return visit_BinOpNode(node, context); break;
 	case NT_UNARY: return visit_UnaryOpNode(node, context); break;
+	case NT_VARACCESS: return visit_VarAccessNode(node, context); break;
+	case NT_VARASSIGN: return visit_VarAssignNode(node, context); break;
 	default: {printf("WTF\n"); exit(1);} break;
 	}
 }
@@ -62,4 +65,37 @@ rtresult_T visit_UnaryOpNode(node_T* node, context_T context) {
 		return rtresult_failure(res, result.error);
 	}
 	return rtresult_success(rtresult_create(),set_pos(number, node->pos_start, node->pos_end));
+}
+
+rtresult_T visit_VarAccessNode(node_T* node, context_T context){
+	rtresult_T res = rtresult_create();
+	varaccessnode_T* va = (varaccessnode_T*)node;
+	char* var_name = va->var_name_tok->value;
+	value_T* value = symboltable_get(context.symboltable, var_name);
+	int* type = symboltable_get_type(context.symboltable, var_name);
+	if(value == NULL){
+		string_T* output = string_create(4);
+		string_push_string(output, var_name);
+		string_push_string(output, " was not defined.");
+		return rtresult_failure(res, RTError(output, node->pos_start, node->pos_end, context));
+	}
+	number_T out_value;
+	switch(*type){
+		case 1: out_value = number_create(1, value->i, -1.0); break;
+		case 2: out_value = number_create(2, -1, value->f); break;
+	}
+	return rtresult_success(res, out_value);
+}
+
+rtresult_T visit_VarAssignNode(node_T* node, context_T context){
+	rtresult_T res = rtresult_create();
+	varassignnode_T* va = (varassignnode_T*)node;
+	char* var_name = va->var_name_tok->value;
+	number_T value = rtresult_register(&res, visit(va->value_node, context));
+	if(res.error) { return res; }
+	union VALUE_UNION v;
+	v.f = value.value.f;
+	v.i = value.value.i;
+	symboltable_push(context.symboltable, var_name, v, value.type);
+	return rtresult_success(res, value);
 }

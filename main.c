@@ -7,6 +7,7 @@
 #include "error.h"
 #include "string.h"
 #include "context.h"
+#include "symboltable.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -47,7 +48,9 @@ int main(int argc, char** argv) { // the main file
 	parser_T* parser = parser_create(list);
 	node_T* node = parser_expr(parser);
 	//node_print(node);
+	symboltable_T* global_symbol_table = symboltable_create(NULL);
 	context_T context = context_create("<program>", NULL, position_create(-1, -1, -1, NULL, NULL));
+	context.symboltable = global_symbol_table;
 	rtresult_T res = visit(node, context);
 	if(res.error != NULL){
 		char* _error = error_as_string(res.error);

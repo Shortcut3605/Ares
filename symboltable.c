@@ -1,6 +1,7 @@
 #include "symboltable.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 value_T* value_create(union VALUE_UNION value){
     value_T* values = malloc(sizeof(union VALUE_UNION));
     *values = value;
@@ -22,9 +23,15 @@ symboltable_T* symboltable_create(symboltable_T* parent){
 }
 
 void symboltable_push(symboltable_T* symboltable, char* name, value_T value, int type){
+    printf("DONE");
     list_push(symboltable->keys, (void*)name);
     list_push(symboltable->types, (void*)type_create(type));
     list_push(symboltable->values, (void*)value_create(value));
+    
+}
+
+void symboltable_pop(symboltable_T* symboltable){
+    
 }
 
 value_T* symboltable_get(symboltable_T* symboltable,char* name){

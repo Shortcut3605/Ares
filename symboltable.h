@@ -22,6 +22,8 @@ symboltable_T* symboltable_create(symboltable_T* parent);
 
 void symboltable_push(symboltable_T* symboltable, char* name, value_T value, int type);
 
+int* symboltable_exists(symboltable_T* symboltable, char* name);
+
 void symboltable_pop(symboltable_T* symboltable);
 
 value_T* symboltable_get(symboltable_T* symboltable,char* name);

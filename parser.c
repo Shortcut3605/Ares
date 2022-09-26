@@ -68,7 +68,7 @@ node_T* parser_term(parser_T* parser) {
 node_T* parser_expr(parser_T* parser) {
 	token_T* var_name = NULL;
 	node_T* expr = NULL;
-	if(matches(parser->current_tok, TT_KEYWORD, "var")){
+	/*if(matches(parser->current_tok, TT_KEYWORD, "var")){
 		parser_advance(parser);
 		if(parser->current_tok->type != TT_IDENTIFIER){
 			printf("FAILURE");
@@ -83,6 +83,18 @@ node_T* parser_expr(parser_T* parser) {
 		parser_advance(parser);
 		expr = parser_expr(parser);
 		return varassignnode_create(var_name, expr);
+	}*/
+	if(parser->current_tok->type == TT_IDENTIFIER){ // a = 1 returns 1
+		var_name = parser->current_tok;
+		parser_T copy = *parser;
+		parser_advance(&copy);
+		if(copy.current_tok->type == TT_EQ){
+			parser_advance(parser);
+			parser_advance(parser);
+			expr = parser_expr(parser);
+			return varassignnode_create(var_name, expr);
+		}
+		
 	}
 	return bin_op(parser, 1, TT_PLUS, TT_MINUS, 1);
 }

@@ -28,6 +28,15 @@ void node_print(node_T* node) {
 		node_print(((unaryopnode_T*)node)->right);
 		printf(")\n");
 		break;
+	case NT_VARASSIGN:
+		printf("(\n");
+		token_print(((varassignnode_T*)node)->var_name_tok);
+		node_print(((varassignnode_T*)node)->value_node);	
+		printf(")\n");
+		break;
+	case NT_VARACCESS:
+		token_print(((varaccessnode_T*)node)->var_name_tok);
+		break;
 	default:
 		printf("?????? WHAT IS DIS NODE\n"); exit(1); break;
 	}

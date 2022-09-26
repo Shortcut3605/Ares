@@ -62,7 +62,7 @@ int main(int argc, char** argv) { // the main file
 		//node_T* node = binopnode_create(numbernode_create(token_create(0, "1")), token_create(2, NULL), numbernode_create(token_create(0, "2")));
 		parser_T* parser = parser_create(list);
 		node_T* node = parser_expr(parser);
-		//node_print(node);
+		node_print(node);
 		union VALUE_UNION v;
 		v.i = 0;
 		rtresult_T res = visit(node, context);

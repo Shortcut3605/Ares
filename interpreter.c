@@ -74,6 +74,8 @@ rtresult_T visit_UnaryOpNode(node_T* node, context_T context) {
 	rtresult_T result = rtresult_create();
 	if (unop->op_tok->type == TT_MINUS) {
 		result = multed_by(number, number_create(1,-1,0));
+	} else if(matches(unop->op_tok, TT_KEYWORD, "not")){
+		result = notted(number);
 	}
 	if(result.error){
 		return rtresult_failure(res, result.error);

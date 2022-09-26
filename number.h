@@ -33,6 +33,8 @@ rtresult_T anded_by(number_T current, number_T other);
 
 rtresult_T ored_by(number_T current, number_T other);
 
+rtresult_T notted(number_T current);
+
 number_T set_pos(number_T number,position_T* start, position_T* end);
 
 number_T set_context(number_T number, context_T context);

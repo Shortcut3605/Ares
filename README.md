@@ -1,15 +1,19 @@
 # Ares
-My own language that I am making.
-# MATH RULES
+ This is the language that I am making as a side project -_-
 
-It only parses math expressions at the moment. Standard pemdas rules apply
+ # Grammar
 
-#Variable Rules
+For all math, standard PEMDAS rules apply:
+- expressions in parenthesis come first.
+- exponents are evaluated next
+- multiplication and division are done left to right.
+- adding and subtracting is also done left to right.
 
-var *name* = *value*
+*name* = *value* (Assigns variable *name* to *value*, creates variable *name* if it does not exist)
 
-creates variable *name* with *value*. Reassigns *name* to *value* if *name* already exists. type does not matter.
+*name* = *name2* = *value* (Assigns variables *name* and *name2* to *value*, creates the variables if they dont exist. This can repeated for as many variables as necessary.)
 
-# FIRST RUN MAKE and then (IF MAC OR LINUX ./ares OR WINDOWS ares.exe) AND PASS IN THE NAME OF THE FILE YOU WANT TO RUN.
-# EXAMPLE: ./ares main.ares OR ares.exe main.ares
+*value* + (*name* = 10) (Creates or reassigns variable *name* with value 10 and adds it to *value*. This will not work without the parenthesis around *name* = 10)
+
+
 

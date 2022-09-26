@@ -99,7 +99,7 @@ node_T* parser_comp_expr(parser_T* parser){
 	list_push(OPS,(void*)type_create(TT_LTE));
 	list_push(OPS,(void*)type_create(TT_GTE));
 	node_T* node = bin_op(parser,4,OPS, 4, NULL);
-
+	return node;
 }
 
 node_T* parser_expr(parser_T* parser) {
@@ -157,6 +157,7 @@ position_T* node_position(node_T* node) {
 	case NT_NUMBER:	return ((numbernode_T*)node)->tok->position;
 	case NT_BINOP: return ((binopnode_T*)node)->op_tok->position;
 	case NT_UNARY: return ((unaryopnode_T*)node)->op_tok->position;
+	default: printf("HELLO"); break;
 	}
 }
 
@@ -169,6 +170,7 @@ char validBinOp(parser_T* parser,list_T* OPS, list_T* VALUES){
 		}
 		return 0;
 	} else {
+
 		for(int i = 0; i < OPS->item_size; i++){
 			if(parser->current_tok->type == *((int*)OPS->data[i])){
 				if(parser->current_tok->value == ((char*)OPS->data[i]) || OPS->data[i] == NULL){

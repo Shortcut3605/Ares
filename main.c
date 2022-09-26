@@ -50,9 +50,12 @@ int main(int argc, char** argv) { // the main file
 	for(int i = 0; i < file_read->item_size; i++){
 		string_T* src = (string_T*)file_read->data[i];
 		printf("%s\n",src->string);
+		
 		if(src==NULL){return 1;}
 		lexer_T* lexer = lexer_create(src->string, "<stdin>");
+		
 		list_T* list = lexer_make_tokens(lexer);
+		
 		if (lexer->error != NULL) {
 			char* _res = error_as_string(lexer->error);
 			printf("%s\n", _res);
@@ -62,7 +65,7 @@ int main(int argc, char** argv) { // the main file
 		}
 		//node_T* node = binopnode_create(numbernode_create(token_create(0, "1")), token_create(2, NULL), numbernode_create(token_create(0, "2")));
 		parser_T* parser = parser_create(list);
-		node_T* node = parser_expr(parser);
+		node_T* node = parser_parse(parser);
 		union VALUE_UNION v;
 		v.i = 0;
 		res = visit(node, context);

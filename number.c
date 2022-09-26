@@ -122,22 +122,70 @@ rtresult_T powed_by(number_T current, number_T other){
 
 rtresult_T get_comparision_eq(number_T current, number_T other){
 	rtresult_T res = rtresult_create();
+	if(current.type == other.type){
 	switch(current.type){
 		case 1: res.number = set_context(number_create(1, (current.value.i == other.value.i), -1), current.context); return res; break;
 		case 2: res.number = set_context(number_create(1, (current.value.f == other.value.f), -1), current.context); return res; break;
 	}
+	}
+	else {
+		switch(current.type){
+			case 1: current.value.f = (float)current.value.i; res.number = set_context(number_create(1, (current.value.f == other.value.f), -1), current.context); return res; break;
+			case 2: other.value.f = (float)other.value.i; res.number = set_context(number_create(1, (current.value.f == other.value.f), -1), current.context); return res; break;
+		}
+	}
+	return res;
 }
 
 rtresult_T get_comparison_ne(number_T current, number_T other){
-
+	rtresult_T res = rtresult_create();
+	if(current.type == other.type){
+	switch(current.type){
+		case 1: res.number = set_context(number_create(1, (current.value.i != other.value.i), -1), current.context); return res; break;
+		case 2: res.number = set_context(number_create(1, (current.value.f != other.value.f), -1), current.context); return res; break;
+	}
+	}
+	else {
+		switch(current.type){
+			case 1: current.value.f = (float)current.value.i; res.number = set_context(number_create(1, (current.value.f != other.value.f), -1), current.context); return res; break;
+			case 2: other.value.f = (float)other.value.i; res.number = set_context(number_create(1, (current.value.f != other.value.f), -1), current.context); return res; break;
+		}
+	}
+	return res;
 }
 
 rtresult_T get_comparison_lt(number_T current, number_T other){
-
+	rtresult_T res = rtresult_create();
+	if(current.type == other.type){
+	switch(current.type){
+		case 1: res.number = set_context(number_create(1, (current.value.i < other.value.i), -1), current.context); return res; break;
+		case 2: res.number = set_context(number_create(1, (current.value.f < other.value.f), -1), current.context); return res; break;
+	}
+	}
+	else {
+		switch(current.type){
+			case 1: current.value.f = (float)current.value.i; res.number = set_context(number_create(1, (current.value.f < other.value.f), -1), current.context); return res; break;
+			case 2: other.value.f = (float)other.value.i; res.number = set_context(number_create(1, (current.value.f < other.value.f), -1), current.context); return res; break;
+		}
+	}
+	return res;
 }
 
 rtresult_T get_comparison_gt(number_T current, number_T other){
-
+	rtresult_T res = rtresult_create();
+	if(current.type == other.type){
+	switch(current.type){
+		case 1: res.number = set_context(number_create(1, (current.value.i > other.value.i), -1), current.context); return res; break;
+		case 2: res.number = set_context(number_create(1, (current.value.f > other.value.f), -1), current.context); return res; break;
+	}
+	}
+	else {
+		switch(current.type){
+			case 1: current.value.f = (float)current.value.i; res.number = set_context(number_create(1, (current.value.f > other.value.f), -1), current.context); return res; break;
+			case 2: other.value.f = (float)other.value.i; res.number = set_context(number_create(1, (current.value.f > other.value.f), -1), current.context); return res; break;
+		}
+	}
+	return res;
 }
 
 rtresult_T get_comparison_lte(number_T current, number_T other){

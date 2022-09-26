@@ -120,6 +120,40 @@ rtresult_T powed_by(number_T current, number_T other){
 	}
 }
 
+rtresult_T get_comparision_eq(number_T current, number_T other){
+	if(other.type == current.type){
+
+	}
+}
+
+rtresult_T get_comparison_ne(number_T current, number_T other){
+
+}
+
+rtresult_T get_comparison_lt(number_T current, number_T other){
+
+}
+
+rtresult_T get_comparison_gt(number_T current, number_T other){
+
+}
+
+rtresult_T get_comparison_lte(number_T current, number_T other){
+
+}
+
+rtresult_T get_comparison_gte(number_T current, number_T other){
+
+}
+
+rtresult_T anded_by(number_T current, number_T other){
+
+}
+
+rtresult_T ored_by(number_T current, number_T other){
+
+}
+
 number_T set_pos(number_T number, position_T* start, position_T* end) {
 	number.pos_start = start;
 	number.pos_end = end;

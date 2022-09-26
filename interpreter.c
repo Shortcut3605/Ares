@@ -36,13 +36,27 @@ rtresult_T visit_BinOpNode(node_T* node, context_T context) {
 	number_T right = rtresult_register(&res,visit(bn->right, context));
 	if(res.error){return res;}
 	rtresult_T result;
-	switch (bn->op_tok->type) {
-	case TT_PLUS: result = added_to(left, right); break;
-	case TT_MINUS: result = subbed_by(left, right); break;
-	case TT_MUL: result = multed_by(left, right); break;
-	case TT_DIV: result = divided_by(left, right); break;
-	case TT_POW: result = powed_by(left, right); break;
-	default: printf("UNEXPECTED TOKEN\n"); break;
+	if(matches(bn->op_tok, TT_KEYWORD, "and")){
+		result = anded_by(left, right);
+	}
+	else if (matches(bn->op_tok, TT_KEYWORD, "or")) {
+		result = ored_by(left, right);
+	}
+	else {
+		switch (bn->op_tok->type) {
+		case TT_PLUS: result = added_to(left, right); break;
+		case TT_MINUS: result = subbed_by(left, right); break;
+		case TT_MUL: result = multed_by(left, right); break;
+		case TT_DIV: result = divided_by(left, right); break;
+		case TT_POW: result = powed_by(left, right); break;
+		case TT_EE: result = get_comparision_eq(left, right); break;
+		case TT_NE: result = get_comparison_ne(left, right); break;
+		case TT_LT: result = get_comparison_lt(left, right); break;
+		case TT_GT: result = get_comparison_gt(left, right); break;
+		case TT_LTE: result = get_comparison_lte(left, right); break;
+		case TT_GTE: result = get_comparison_gte(left, right); break;
+		default: printf("UNEXPECTED TOKEN\n"); break;
+		}
 	}
 	if(result.error){
 		return rtresult_failure(res,result.error);

@@ -5,6 +5,8 @@
         "result.h": "c",
         "interpreter.h": "c",
         "error.h": "c",
-        "iterator": "c"
+        "iterator": "c",
+        "token.h": "c",
+        "parser.h": "c"
     }
 }

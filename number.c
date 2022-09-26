@@ -258,7 +258,6 @@ rtresult_T ored_by(number_T current, number_T other){
 
 rtresult_T notted(number_T current){
 	rtresult_T res = rtresult_create();
-
 	switch(current.type){
 		case 1: res.number = set_context(number_create(1, (current.value.i == 0 ? 0 : 1), -1), current.context);
 		case 2: res.number = set_context(number_create(1, (current.value.f == 0.0 ? 0 : 1), -1), current.context);

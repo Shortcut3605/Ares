@@ -24,6 +24,14 @@ char isKeyword(char* str);
 
 token_T* lexer_make_identifier(lexer_T* lexer);
 
+token_T* make_not_equals(lexer_T* lexer);
+
+token_T* make_equals(lexer_T* lexer);
+
+token_T* make_less_than(lexer_T* lexer);
+
+token_T* make_greater_than(lexer_T* lexer);
+
 list_T* lexer_make_tokens(lexer_T* lexer);
 
 #endif // !LEXER_H

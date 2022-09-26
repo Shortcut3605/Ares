@@ -16,6 +16,12 @@ typedef struct TOKEN_STRUCT {
 		TT_EQ,
 		TT_LPAREN,
 		TT_RPAREN,
+		TT_EE,
+		TT_NE,
+		TT_LT,
+		TT_GT,
+		TT_LTE,
+		TT_GTE,
 		TT_EOF,
 	} type; 
 	position_T* position;

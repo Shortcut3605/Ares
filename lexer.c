@@ -62,8 +62,8 @@ token_T* lexer_make_number(lexer_T* lexer) { // TODO MAKE STRINGS MORE EFFICIENT
 }
 
 char isKeyword(char* str){
-	char* KEYWORDS[] = {"var"};
-	int KEYWORDS_LEN = 1;
+	char* KEYWORDS[] = {"and","or","not"};
+	int KEYWORDS_LEN = 3;
 	
 	for(int i = 0; i < KEYWORDS_LEN; i++){
 		if(strcmp(KEYWORDS[i],str)==0){
@@ -90,6 +90,48 @@ token_T* lexer_make_identifier(lexer_T* lexer) {
 	return tok;
 }
 
+token_T* make_not_equals(lexer_T* lexer){
+	position_T* pos_start = position_copy(lexer->pos);
+	lexer_advance(lexer);
+	if(lexer->current_char == '='){
+		lexer_advance(lexer);
+		return token_create(TT_NE, NULL, pos_start, lexer->pos);
+	}
+	lexer_advance(lexer);
+	lexer->error = error_create("Expected Character", '`=` (after `!`)', pos_start, lexer->pos);
+	return NULL;
+}
+
+token_T* make_equals(lexer_T* lexer){
+	position_T* pos_start = position_copy(lexer->pos);
+	lexer_advance(lexer);
+	if(lexer->current_char == '='){
+		lexer_advance(lexer);
+		return token_create(TT_EE, NULL, pos_start, lexer->pos);
+	}
+	return token_create(TT_EQ, NULL, pos_start, lexer->pos);
+}
+
+token_T* make_less_than(lexer_T* lexer){
+	position_T* pos_start = position_copy(lexer->pos);
+	lexer_advance(lexer);
+	if(lexer->current_char == '='){
+		lexer_advance(lexer);
+		return token_create(TT_LTE, NULL, pos_start, lexer->pos);
+	}
+	return token_create(TT_LT, NULL, pos_start, lexer->pos);
+}
+
+token_T* make_greater_than(lexer_T* lexer){
+	position_T* pos_start = position_copy(lexer->pos);
+	lexer_advance(lexer);
+	if(lexer->current_char == '='){
+		lexer_advance(lexer);
+		return token_create(TT_GTE, NULL, pos_start, lexer->pos);
+	}
+	return token_create(TT_GT, NULL, pos_start, lexer->pos);
+}
+
 list_T* lexer_make_tokens(lexer_T* lexer) {
 	list_T* list = list_create(1);
 
@@ -113,9 +155,20 @@ list_T* lexer_make_tokens(lexer_T* lexer) {
 				case '*': list_push(list, (void*)token_create(TT_MUL, NULL, lexer->pos, NULL)); break;
 				case '/': list_push(list, (void*)token_create(TT_DIV, NULL, lexer->pos, NULL)); break;
 				case '^': list_push(list, (void*)token_create(TT_POW, NULL, lexer->pos, NULL)); break;
-				case '=': list_push(list, (void*)token_create(TT_EQ, NULL, lexer->pos, NULL)); break;
 				case '(': list_push(list, (void*)token_create(TT_LPAREN, NULL, lexer->pos, NULL)); break;
 				case ')': list_push(list, (void*)token_create(TT_RPAREN, NULL, lexer->pos, NULL)); break;
+				case '!':{
+					token_T* tok = make_not_equals(lexer);
+					if(tok==NULL){
+						//error
+						return NULL;
+					}
+					list_push(list, (void*)tok);
+					break;
+				}
+				case '=': list_push(list, (void*)make_equals(lexer)); break; 
+				case '<': list_push(list, (void*)make_less_than(lexer)); break;
+				case '>': list_push(list, (void*)make_greater_than(lexer)); break;
 				case '\n': break;
 				default: {
 					position_T* position_start = position_copy(lexer->pos);

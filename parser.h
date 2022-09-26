@@ -20,12 +20,16 @@ node_T* parser_factor(parser_T* parser);
 
 node_T* parser_term(parser_T* parser);
 
+node_T* parser_arith_expr(parser_T* parser);
+
+node_T* parser_comp_expr(parser_T* parser);
+
 node_T* parser_expr(parser_T* parser);
 
 node_T* parser_parse(parser_T* parser);
 
 position_T* node_position(node_T* node);
 
-node_T* bin_op(parser_T* parser, int type, int OP1, int OP2 ,int type2);
+node_T* bin_op(parser_T* parser, int type, list_T* OPS,int type2, list_T* VALUES);
 
 #endif

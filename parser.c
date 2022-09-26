@@ -1,7 +1,9 @@
 #include "parser.h"
 #include "token.h"
+#include "symboltable.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 parser_T* parser_create(list_T* tokenlist) {
 	parser_T* parser = malloc(sizeof(struct PARSER_STRUCT));
@@ -20,7 +22,9 @@ void parser_advance(parser_T* parser) {
 }
 
 node_T* atom(parser_T* parser){
+	
 	token_T* tok = parser->current_tok;
+	printf("%s\n",token_type_to_str(tok->type));
 	node_T* factor = NULL;
 	node_T* expr = NULL;
 	if (tok->type == TT_INT || tok->type == TT_FLOAT) {
@@ -39,13 +43,17 @@ node_T* atom(parser_T* parser){
 		parser_advance(parser);
 		return varaccessnode_create(tok);
 	}
+	
 	printf("<PARSER FACTOR Invalid syntax: expected INT or FLOAT in FILE %s, LINE %d COL %d\n", tok->position->fn, tok->position->ln , tok->position->col);
 	printf("%s",token_type_to_str(tok->type));
 	exit(1);
 }
 
 node_T* parser_power(parser_T* parser){
-	return bin_op(parser, 2, TT_POW, TT_POW, 0);
+	list_T* OPS = list_create(2);
+	list_push(OPS,(void*)type_create(TT_POW));
+	list_push(OPS,(void*)type_create(TT_POW));
+	return bin_op(parser, 2, OPS, 0, NULL);
 }
 
 node_T* parser_factor(parser_T* parser) {
@@ -62,7 +70,36 @@ node_T* parser_factor(parser_T* parser) {
 }
 
 node_T* parser_term(parser_T* parser) {
-	return bin_op(parser, 0, TT_MUL, TT_DIV, 0);
+	list_T* OPS = list_create(2);
+	list_push(OPS,(void*)type_create(TT_MUL));
+	list_push(OPS,(void*)type_create(TT_DIV));
+	return bin_op(parser, 0, OPS, 0, NULL);
+}
+
+node_T* parser_arith_expr(parser_T* parser){
+	list_T* OPS = list_create(2);
+	list_push(OPS,(void*)type_create(TT_PLUS));
+	list_push(OPS,(void*)type_create(TT_MINUS));
+	return bin_op(parser, 1, OPS, 1, NULL);
+}
+
+node_T* parser_comp_expr(parser_T* parser){
+	token_T* op_tok = NULL;
+	if(matches(parser->current_tok, TT_KEYWORD, "not")){
+		op_tok = parser->current_tok;
+		parser_advance(parser);
+		node_T* node = parser_comp_expr(parser);
+		return unaryopnode_create(op_tok, node);
+	}
+	list_T* OPS = list_create(2);
+	list_push(OPS,(void*)type_create(TT_EE));
+	list_push(OPS,(void*)type_create(TT_NE));
+	list_push(OPS,(void*)type_create(TT_LT));
+	list_push(OPS,(void*)type_create(TT_GT));
+	list_push(OPS,(void*)type_create(TT_LTE));
+	list_push(OPS,(void*)type_create(TT_GTE));
+	node_T* node = bin_op(parser,4,OPS, 4, NULL);
+
 }
 
 node_T* parser_expr(parser_T* parser) {
@@ -91,12 +128,19 @@ node_T* parser_expr(parser_T* parser) {
 		if(copy.current_tok->type == TT_EQ){
 			parser_advance(parser);
 			parser_advance(parser);
-			expr = parser_expr(parser);
+			
+			expr = parser_arith_expr(parser);
 			return varassignnode_create(var_name, expr);
 		}
 		
 	}
-	return bin_op(parser, 1, TT_PLUS, TT_MINUS, 1);
+	list_T* OPS = list_create(2);
+	list_push(OPS,(void*)type_create(TT_KEYWORD));
+	list_push(OPS,(void*)type_create(TT_KEYWORD));
+	list_T* VALUES = list_create(2);
+	list_push(VALUES, (void*)"and");
+	list_push(VALUES, (void*)"or");
+	return bin_op(parser, 3, OPS, 3, VALUES);
 }
 
 node_T* parser_parse(parser_T* parser) {
@@ -116,7 +160,28 @@ position_T* node_position(node_T* node) {
 	}
 }
 
-node_T* bin_op(parser_T* parser, int type, int OP1, int OP2, int type2) {
+char validBinOp(parser_T* parser,list_T* OPS, list_T* VALUES){
+	if(VALUES == NULL){
+		for(int i = 0; i < OPS->item_size; i++){
+			if(parser->current_tok->type == *((int*)OPS->data[i])){
+				return 1;
+			}
+		}
+		return 0;
+	} else {
+		for(int i = 0; i < OPS->item_size; i++){
+			if(parser->current_tok->type == *((int*)OPS->data[i])){
+				if(parser->current_tok->value == ((char*)OPS->data[i]) || OPS->data[i] == NULL){
+					return 0;
+				}
+				return 1;
+			}
+		}
+		return 1;
+	}
+}
+
+node_T* bin_op(parser_T* parser, int type, list_T* OPS,int type2, list_T* VALUES) {
 	node_T* left = NULL;
 	node_T* right = NULL;
 	token_T* op_tok = NULL;
@@ -124,14 +189,18 @@ node_T* bin_op(parser_T* parser, int type, int OP1, int OP2, int type2) {
 	case 0: left = parser_factor(parser); break;
 	case 1: left = parser_term(parser); break;
 	case 2: left = atom(parser); break;
+	case 3: left = parser_comp_expr(parser); break;
+	case 4: left = parser_arith_expr(parser); break;
 	}
-	while (parser->current_tok->type == OP1 || parser->current_tok->type == OP2) {
+	while (validBinOp(parser, OPS, VALUES)) {
 		op_tok = parser->current_tok;
 		parser_advance(parser);
 		switch (type2) {
 		case 0: right = parser_factor(parser); break;
 		case 1: right = parser_term(parser); break;
 		case 2: right = atom(parser); break;
+		case 3: right = parser_comp_expr(parser); break;
+		case 4: right = parser_arith_expr(parser); break;
 		}
 		left = binopnode_create(left, op_tok, right);
 	}
@@ -139,6 +208,9 @@ node_T* bin_op(parser_T* parser, int type, int OP1, int OP2, int type2) {
 		position_T* pos = node_position(left);
 		printf("Parser expected +, -, / or * in FILE %s, LINE %d COL %d\n", pos->fn, pos->ln, pos->col);
 		exit(1);
+	}
+	if(type == 1){
+	node_print(left);
 	}
 	return left;
 }

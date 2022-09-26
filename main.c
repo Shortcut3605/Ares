@@ -41,6 +41,7 @@ int main(int argc, char** argv) { // the main file
 	}
 	int len = 0;
 	list_T* file_read = read_file(argv[1]);
+	rtresult_T res;
 	symboltable_T* global_symbol_table = symboltable_create(NULL);
 		//symboltable_push(global_symbol_table, "a", v, 1);
 		//symboltable_push(global_symbol_table, "a", v, 2);
@@ -53,19 +54,18 @@ int main(int argc, char** argv) { // the main file
 		lexer_T* lexer = lexer_create(src->string, "<stdin>");
 		list_T* list = lexer_make_tokens(lexer);
 		if (lexer->error != NULL) {
-			char* res = error_as_string(lexer->error);
-			printf("%s\n", res);
-			free(res);
+			char* _res = error_as_string(lexer->error);
+			printf("%s\n", _res);
+			free(_res);
 			error_destroy(lexer->error);
 			exit(1);
 		}
 		//node_T* node = binopnode_create(numbernode_create(token_create(0, "1")), token_create(2, NULL), numbernode_create(token_create(0, "2")));
 		parser_T* parser = parser_create(list);
 		node_T* node = parser_expr(parser);
-		node_print(node);
 		union VALUE_UNION v;
 		v.i = 0;
-		rtresult_T res = visit(node, context);
+		res = visit(node, context);
 		if(res.error != NULL){
 			char* _error = error_as_string(res.error);
 			printf("%s\n", _error);
@@ -76,9 +76,7 @@ int main(int argc, char** argv) { // the main file
 		switch(res.number.type){
 			case 1: printf("%d\n",res.number.value.i); break;
 			case 2: printf("%f\n",res.number.value.f); break;
-		}
-		
-
+	}
 		list_destroy(list);
 		string_destroy(src);
 	}

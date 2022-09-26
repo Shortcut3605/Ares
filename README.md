@@ -15,5 +15,9 @@ For all math, standard PEMDAS rules apply:
 
 *value* + (*name* = 10) (Creates or reassigns variable *name* with value 10 and adds it to *value*. This will not work without the parenthesis around *name* = 10)
 
+*value* + (*name* = *name2* = 10) (Creates or reassigns variables *name* and *name2* with value 10 and add it to *value*)
 
+# Supported Data Types
+- integers
+- floating points
 

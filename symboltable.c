@@ -75,7 +75,7 @@ int* symboltable_get_type(symboltable_T* symboltable,char* name){
         }
     }
     if(symboltable->parent != NULL){
-        return symboltable_get_type(symboltable->parent, name);
+        return symboltable_get_type(symboltable->parent, name); // Searches global symbol table.
     }
-    return NULL;
+    return NULL; // 
 }
